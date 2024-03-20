@@ -9,25 +9,22 @@ export enum LogType {
   ERROR = "ERR",
 }
 
-export type LogRequest = {
+type LogBase = {
   timestamp: Date;
   type: LogType;
   uuid: string;
+};
+
+export type LogRequest = LogBase & {
   method: string;
   path: string;
 };
 
-export type LogMessage = {
-  timestamp: Date;
-  type: LogType;
-  uuid: string;
+export type LogMessage = LogBase & {
   message: string;
 };
 
-export type LogMetaData = {
-  timestamp: Date;
-  type: LogType;
-  uuid: string;
+export type LogMetaData = LogBase & {
   duration: number;
 };
 
