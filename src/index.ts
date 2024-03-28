@@ -9,6 +9,9 @@ import {
   type ILoggerFn,
 } from "./types";
 
+// re-export types
+export * from "./types";
+
 const defaultOptions: IOptions = {
   headerForRequestId: undefined,
   logRequests: true,
