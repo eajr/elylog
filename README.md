@@ -12,14 +12,14 @@ bun add @eajr/elylog
 
 ```ts
 import { Elysia } from "elysia";
-import { elylog } from "@eajr/elylog";
+import { elylog, LogType } from "@eajr/elylog";
 
 const app = new Elysia()
   .use(elylog())
   .get("/", (ctx) => {
-    ctx.log.error("There was an error");
-    ctx.log.info("Here's some info");
-    ctx.log.warn("Beware!");
+    ctx.log(LogType.INFO, { message: "There was an error" });
+    ctx.log(LogType.ERROR, { message: "Here's some info" });
+    ctx.log(LogType.WARNING, { message: "Beware!" });
     return "Hello World";
   })
   .listen(8080);
@@ -31,7 +31,7 @@ console.log(`Listening on http://${app.server!.hostname}:${app.server!.port}`);
 
 ```json
 {"timestamp":"2024-03-19T20:53:27.453Z","type":"SYS","uuid":"1967b8c9-588b-4d43-933d-1658c453efc6","method":"GET","path":"/info"}
-{"timestamp":"2024-03-19T20:53:27.453Z","type":"INFO","uuid":"1967b8c9-588b-4d43-933d-1658c453efc6","message":"info test"}
+{"timestamp":"2024-03-19T20:53:27.453Z","type":"INFO","uuid":"1967b8c9-588b-4d43-933d-1658c453efc6","data": { "message":"info test"}}
 {"timestamp":"2024-03-19T20:53:27.454Z","type":"META","uuid":"1967b8c9-588b-4d43-933d-1658c453efc6","duration":6}
 ```
 
@@ -66,6 +66,13 @@ export interface Options {
 ## Additional notes
 
 For some reason the [Elysia-Swagger](https://github.com/elysiajs/elysia-swagger) plugin breaks if you instantiate elylog before the swagger plugin. It also breaks for other logging plugins, so make sure to `.use(elylog())` after you use the swagger plugin.
+
+## Changelog
+
+#### v1.0.0
+
+- Changed text logging (via context logger) to object logging
+- Added multi-file elysia example api in `/examples/multifile`
 
 ## License
 
