@@ -35,6 +35,10 @@ const defaultOptions: IOptions = {
 };
 
 // Main plugin
+/**
+ * Creates the Elylog plugin instance and attaches lifecycle hooks for request,
+ * message, and metadata logging.
+ */
 export const elylog = (options?: IOptions) => {
   if (options === undefined) options = defaultOptions;
   else options = { ...defaultOptions, ...options };
@@ -92,6 +96,9 @@ export const elylog = (options?: IOptions) => {
   );
 };
 
+/**
+ * Builds the response lifecycle handler used to emit metadata logs for completed requests.
+ */
 const onResponse = (options: IOptions) => {
   return (ctx: Context) => {
     if (options?.logMetaData) {
@@ -112,6 +119,10 @@ const onResponse = (options: IOptions) => {
 
 type ResponseHook = ReturnType<typeof onResponse>;
 
+/**
+ * Registers the response hook across Elysia versions by preferring
+ * `onAfterResponse` and falling back to `onResponse`.
+ */
 const registerResponseHook = (app: unknown, handler: ResponseHook) => {
   const hookable = app as {
     onAfterResponse?: (callback: ResponseHook) => unknown;
@@ -126,6 +137,9 @@ const registerResponseHook = (app: unknown, handler: ResponseHook) => {
   return app;
 };
 
+/**
+ * Converts high-resolution `process.hrtime.bigint` timestamps into milliseconds.
+ */
 function durationToMilliseconds(start: bigint, end: bigint) {
   return (end - start) / BigInt(1000000);
 }
