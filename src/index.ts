@@ -39,7 +39,7 @@ export const elylog = (options?: IOptions) => {
   if (options === undefined) options = defaultOptions;
   else options = { ...defaultOptions, ...options };
 
-  return new Elysia({
+  const plugin = new Elysia({
     name: "@eajr/elylog",
   })
     .derive((ctx) => {
@@ -85,9 +85,11 @@ export const elylog = (options?: IOptions) => {
 
         options?.requestPrintFn?.(log);
       }
-    })
-    .onResponse(onResponse(options))
-    .onError((ctx) => {});
+    });
+
+  return (registerResponseHook(plugin, onResponse(options)) as typeof plugin).onError(
+    (ctx) => {},
+  );
 };
 
 const onResponse = (options: IOptions) => {
@@ -106,6 +108,22 @@ const onResponse = (options: IOptions) => {
       options?.metadataPrintFn?.(log);
     }
   };
+};
+
+type ResponseHook = ReturnType<typeof onResponse>;
+
+const registerResponseHook = (app: unknown, handler: ResponseHook) => {
+  const hookable = app as {
+    onAfterResponse?: (callback: ResponseHook) => unknown;
+    onResponse?: (callback: ResponseHook) => unknown;
+  };
+
+  if (typeof hookable.onAfterResponse === "function")
+    return hookable.onAfterResponse(handler);
+  if (typeof hookable.onResponse === "function")
+    return hookable.onResponse(handler);
+
+  return app;
 };
 
 function durationToMilliseconds(start: bigint, end: bigint) {

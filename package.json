@@ -33,8 +33,10 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@elysiajs/node": "^1.4.4",
+    "@sinclair/typebox": "^0.34.0",
     "@types/bun": "latest",
-    "elysia": "^1.0.6"
+    "elysia": "1.4.19"
   },
   "peerDependencies": {
     "typescript": "^5.0.0",
